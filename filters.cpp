@@ -380,6 +380,70 @@ void resize_filter(Image &image,std::string &inputPath){
     save_image(image,inputPath);
     std::cout << "Image resized"<<"\n";
 }
+void rotate_filter(Image &image,std::string &inputPath){
+    
+    bool picking = true;
+    int choice = 0;
+
+    while(picking){
+        std::cout << "Rotate 90-180-270: ";
+        std::cin >>choice;
+        if (choice==90){
+
+            picking = false;
+        }
+        else if(choice==180){
+
+            picking = false;
+        }
+        else if(choice==270){
+
+            picking = false;
+        }
+        else{
+            std::cout<<"invalid input!\n";
+        }
+    } 
+
+
+    if(choice==90){
+        Image newImage(image.height,image.width);
+        for (int i =0;i<image.width;i++){
+            for (int j=0;j<image.height;j++){
+                newImage(image.height-1-j,i, 0) = image(i, j, 0);
+                newImage(image.height-1-j,i, 1) = image(i, j, 1);
+                newImage(image.height-1-j,i, 2) = image(i, j, 2);
+            }
+        }
+        image = newImage;
+    }
+    if(choice==180){
+        Image newImage(image.width,image.height);
+        for (int i =0;i<image.width;i++){
+            for (int j=0;j<image.height;j++){
+                newImage(image.width-1-i,image.height-1-j, 0) = image(i, j, 0);
+                newImage(image.width-1-i,image.height-1-j, 1) = image(i, j, 1);
+                newImage(image.width-1-i,image.height-1-j, 2) = image(i, j, 2);
+            }
+        }
+        image = newImage;
+    }
+    if(choice==270){
+        Image newImage(image.height,image.width);
+        for (int i =0;i<image.width;i++){
+            for (int j=0;j<image.height;j++){
+                newImage(j, image.width-i-1, 0) = image(i, j, 0);
+                newImage(j, image.width-i-1, 1) = image(i, j, 1);
+                newImage(j, image.width-i-1, 2) = image(i, j, 2);
+            }
+        }
+        image = newImage;
+    }
+
+    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,inputPath);
+    std::cout << "Image rotated"<<"\n";
+}
 
 int main(){
     
@@ -401,8 +465,10 @@ int main(){
         std::cout << "7 - Weird Filter"<<"\n";
         std::cout << "8 - Brightness Filter"<<"\n";
         std::cout << "9 - Resize Filter"<<"\n";
-        std::cout << "10 - Save Image"<<"\n";
-        std::cout << "11 - Exit"<<"\n";
+        std::cout << "10 - Rotate Filter"<<"\n";
+
+        std::cout << "11 - Save Image"<<"\n";
+        std::cout << "12 - Exit"<<"\n";
         
         // Select filter 
         // filiter selection in function
@@ -480,10 +546,18 @@ int main(){
             }
             break;
         case 10:
+            if(THERE_IS_IMAGE){
+                rotate_filter(img,inputPath);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+        case 11:
             // save Image 
             saving_state(img,outputPath);
             break;
-        case 11:
+        case 12:
             // exit
             exiting(img,running);
             break;
