@@ -313,46 +313,61 @@ void flip(Image &image,std::string &inputPath){
     std::cout << "Flip applied"<<"\n";
 }
 void brightness_filter(Image &image,std::string &inputPath){
-    int precentage = 1;
-    char choice = 'b';
-    bool b = true;
+    std::cout << "Select either darken or lighten:\n	1- Darken\n	2- Lighten\n";
     bool picking = true;
-    while(picking){
-        std::cout << "Bright or Darken (b,d): ";
-        std::cin >> choice;
-        if (choice=='b'){
-            b = true;
-            picking = false;
-        }
-        else if (choice=='d'){
-            b = false;
-            picking = false;
-        }
-        else{
-            std::cout << "invalid input\n";
-        }
-    }
-    std::cout << "precentage (1-100) : ";
-    std::cin >> precentage;
-    for (int i =0 ;i<image.width;i++){
-        for (int j=0;j<image.height;j++){
-            for (int k =0;k<3;k++){
-                if (b){
-                    int temp = image(i,j,k)+(255*(precentage/100.0f));
-                    image (i,j,k) = std::clamp(temp,0,255);
+    int selection = 0;
 
-                }
-                else{
-                    int temp = image(i,j,k)-(255*(precentage/100.0f));
-                    image (i,j,k) = std::clamp(temp,0,255);
-                }
-            }
+    while (picking)
+    {
+        std::cin >> selection;
+        if (selection != 1 && selection != 2) {
+            std::cout << "Invalid selection. Please choose 1 or 2.\n";
+        } else {
+            picking = false;
         }
     }
+    	
+	if (selection == 1) {
+
+		std::cout << "Write down the percentage you want to darken by (from 0 to 100):\n";
+		float percentage;
+		std::cin >> percentage;
+		percentage /= 100;
+		for (int i = 0;i < image.width;++i) {
+			for (int j = 0;j < image.height;j++) {
+				for (int k = 0;k < 3;k++) {
+					if ((image(i, j, k) - (image(i, j, k) * percentage)) >= 0) {
+						image(i, j, k) -= (image(i, j, k) * percentage);
+					}
+					else image(i, j, k) = 0;
+				}
+			}
+		}
+	}
+
+	else if (selection == 2) {
+
+		std::cout << "Write down the percentage you want to lighten by (from 0 to 100):\n";
+		float percentage;
+		std:: cin >> percentage;
+		percentage /= 100;
+		for (int i = 0;i < image.width;++i) {
+			for (int j = 0;j < image.height;j++) {
+				for (int k = 0;k < 3;k++) {
+					if ((image(i, j, k) + (image(i, j, k) * percentage)) <= 255) {
+						image(i, j, k) += (image(i, j, k) * percentage);
+					}
+					else image(i, j, k) = 255;
+				}
+			}
+		}
+	}
     inputPath = TEMP_DIRECTORY + get_filename(inputPath);
     save_image(image,inputPath);
     std::cout << "Brightness Edited"<<"\n";
 }
+    
+
 void resize_filter(Image &image,std::string &inputPath){
     double newWidth = 1280,newHeight = 720;
 
