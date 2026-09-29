@@ -2,12 +2,12 @@
 #include <iostream>
 #include<filesystem>
 #include <algorithm>
-#include "Image_Class.h"
+#include "libraries/Image_Class.h"
 
 
 bool THERE_IS_IMAGE = 0;
 std::string SAVE_DIRECTORY = "Saved/";
-std::string TEMP_DIRECTORY = "temp/";
+std::string TEMP_DIRECTORY = "Preview/";
 
 void check_make_dir(std::string &path){
     bool there_is_directory = std::filesystem::is_directory(path);
@@ -24,8 +24,8 @@ void get_create_filepath(std::filesystem::path path){
 
 // clear the temp folder after save
 void remove_temp(){
-    std::filesystem::remove_all("Temp");
-    std::filesystem::create_directory("Temp");
+    std::filesystem::remove_all("Preview");
+    std::filesystem::create_directory("Preview/");
 }
 
 //  parser to get the extension from the input 
@@ -448,7 +448,7 @@ void rotate_filter(Image &image,std::string &inputPath){
 int main(){
     
     get_create_filepath("Saved/");
-    get_create_filepath("Temp/");
+    get_create_filepath("Preview/");
     bool running = true;
 
     Image img;
