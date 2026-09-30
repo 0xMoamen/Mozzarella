@@ -166,6 +166,7 @@ void grayscale_filter(Image &image,std::string &inputPath){
     save_image(image,inputPath);
     std::cout << "grayscale applied"<<"\n";
 }
+
 void blackandwhite_filter(Image &image,std::string & inputPath){
         for (int i = 0;i < image.width;i++){
         unsigned int avg=0;
@@ -187,83 +188,97 @@ void blackandwhite_filter(Image &image,std::string & inputPath){
     save_image(image,inputPath);
     std::cout << "Black&White applied"<<"\n";
 }
-void frame_filter(Image &image, std::string &inputPath){
-    int frame_size = 20;
-    int color = 0;
-    char c = 'r';
 
-    bool picking = true;
-    while(picking){
-        std::cout << "choose color (r, g ,b): ";
-        std::cin>>c;
-        if (c=='r'){
-            color = 1;
-            picking = false;
-        }
-        else if (c=='g'){ 
-            color =2;
-            picking=false;
-        }
-        else if(c=='b') {
-            color = 0;
-            picking=false;
-        }
-        else{
-            std::cout << "invalid character,"<<"\n";
+void frame_filter(Image &image, std::string &inputPath){
+    
+    char c;
+    cout << "Choose frame: s = Simple, f = Fancy: ";
+    cin >> c;
+
+    while (c!='s' && c!='S' && c!='f' && c!='F')
+    {
+        cout << "Invalid choice. Enter s or f: ";
+        cin >> c;
+    }
+
+    bool fancy = (c=='f' || c=='F');
+
+    int colors[8][3] = {
+        {255,0,0}, {0,255,0}, {0,0,255}, {168,5,250},
+        {255,255,0}, {16,163,222}, {0,0,0}, {255,255,255}
+    };        
+
+    cout << "1) Red  2) Green  3) Blue  4) Purple\n"
+    << "5) Yellow  6) Cyan  7) Black  8) White\n";
+    
+    int c1;
+    std::cout << "Main color: ";
+    std::cin >> c1;
+
+    while (c1 < 1 || c1 > 8)
+    {
+        cout << "Invalid choice. Enter 1-8: ";
+        cin >> c1;
+    }
+
+    int c2 = 0;
+
+    if (fancy)
+    {
+        cout << "Inner color: ";
+        cin >> c2;
+        while (c2 < 1 || c2 > 8)
+        {
+            cout << "Invalid choice. Enter 1-8: ";
+            cin >> c2;
         }
     }
-    picking = true;
-    while(picking){
-        std::cout << "Frame size 1-100 : ";
-        std::cin >> frame_size;
-        frame_size %= 101;
-        picking = false;
-    }
-    for (int i = 0;i<image.width;i++){
-        for (int j = 0;j<frame_size;j++){
-            for (int k = 0;k<3;k++){
-                image(i,j,color) = 255;
-                image(i,j,(color+1)%3) = 0;
-                image(i,j,(color+2)%3) = 0;
-                color = (color+1) % 3;
+
+    int q = 0.027*image.height, e = 0.027*image.width;
+
+    Image nimage(image.width + 2*e, image.height + 2*q);
+
+    int a = e/3, b = q/3;
+    int W = nimage.width, H = nimage.height;
+
+    for (int y = 0; y < nimage.height; y++)
+    {
+        for (int x = 0; x < nimage.width; x++)
+        {
+            if (x < e || x >= nimage.width-e || y < q || y >= nimage.height-q)
+            {
+                int color = c1-1;
+
+                if (fancy &&(
+
+                    (x >= a && x < 2*a && y >= b && y < H-b) ||
+                    (x >= W-2*a && x < W-a && y >= b && y < H-b) ||
+                    (y >= b && y < 2*b && x >= a && x < W-a) ||
+                    (y >= H-2*b && y < H-b && x >= a && x < W-a)
+
+                    )
+                ) 
+                    color = c2-1;
+
+                    nimage(x,y,0) = colors[color][0];
+                    nimage(x,y,1) = colors[color][1];
+                    nimage(x,y,2) = colors[color][2];
             }
-        }
-    }
-    for (int i = 0;i<frame_size;i++){
-        for (int j = 0;j<image.height;j++){
-            for (int k = 0;k<3;k++){
-                image(i,j,color) = 255;
-                image(i,j,(color+1)%3) = 0;
-                image(i,j,(color+2)%3) = 0;
-                color = (color+1) % 3;
-            }
-        }
-    }
-    for (int i = image.width-1;i>=image.width-frame_size;i--){
-        for (int j = 0 ; j<image.height;j++){
-            for (int k = 0;k<3;k++){
-                image(i,j,color) = 255;
-                image(i,j,(color+1)%3) = 0;
-                image(i,j,(color+2)%3) = 0;
-                color = (color+1) % 3;
-            }
-        }
-    }
-    for (int i =0 ;i<image.width;i++){
-        for (int j = image.height-1;j>=image.height-frame_size;j--){
-            for (int k = 0;k<3;k++){
-                image(i,j,color) = 255;
-                image(i,j,(color+1)%3) = 0;
-                image(i,j,(color+2)%3) = 0;
-                color = (color+1) % 3;
+
+            else
+            {
+                nimage(x,y,0) = image(x-e,y-q,0);
+                nimage(x,y,1) = image(x-e,y-q,1);
+                nimage(x,y,2) = image(x-e,y-q,2);
             }
         }
     }
     
     inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    save_image(nimage,inputPath);
     std::cout << "Frame Added"<<"\n";
 }
+
 void weird_filter(Image &image,std::string &inputPath){
     for (int i = 0 ; i<image.width;i++){
         for (int j = 0; j<image.height/2;j++){
@@ -276,6 +291,7 @@ void weird_filter(Image &image,std::string &inputPath){
     save_image(image,inputPath);
     std::cout << "Weird applied"<<"\n";
 }
+
 void flip(Image &image,std::string &inputPath){
     char choice = 'h';
     bool picking = true;
@@ -312,6 +328,7 @@ void flip(Image &image,std::string &inputPath){
     save_image(image,inputPath);
     std::cout << "Flip applied"<<"\n";
 }
+
 void brightness_filter(Image &image,std::string &inputPath){
     std::cout << "Select either darken or lighten:\n	1- Darken\n	2- Lighten\n";
     bool picking = true;
@@ -366,35 +383,45 @@ void brightness_filter(Image &image,std::string &inputPath){
     save_image(image,inputPath);
     std::cout << "Brightness Edited"<<"\n";
 }
-    
 
 void resize_filter(Image &image,std::string &inputPath){
-    double newWidth = 1280,newHeight = 720;
+    double newWidth, newHeight ;
+
+    std::cout << "Please Enter Your prefered width and height : " ;
 
     std::cout << "Width: ";
-    std::cin >> newWidth;
+    std::cin >> newWidth ;
+
     std::cout << "Height: ";
-    std::cin >> newHeight;
+    std::cin >> newHeight ;
 
 
     Image newImage(newWidth,newHeight);
+
     double xRatio =  (double)image.width/newWidth;
     double yRatio = (double)image.height/newHeight;
 
-    for (int i = 0;i<newWidth;i++){
-        for (int j = 0;j<newHeight;j++){
-            int x = i*xRatio;
-            int y = j*yRatio;
-            newImage(i,j,0) = image(x,y,0); 
-            newImage(i,j,1) = image(x,y,1); 
-            newImage(i,j,2) = image(x,y,2); 
+    for (int y=0 ; y<newHeight ; y++){
+        
+        for (int x=0 ; x<newWidth ; x++){
+
+            int pw = std::min((int)(x * xRatio), image.width - 1);
+            int ph = std::min((int)(y * yRatio), image.height - 1);
+            
+                newImage (x, y, 0) = image (pw, ph, 0) ;
+                newImage (x, y, 1) = image (pw, ph, 1) ;
+                newImage (x, y, 2) = image (pw, ph, 2) ;
+
         }
+
     }
+
     image = newImage; 
     inputPath = TEMP_DIRECTORY + get_filename(inputPath);
     save_image(image,inputPath);
     std::cout << "Image resized"<<"\n";
 }
+
 void rotate_filter(Image &image,std::string &inputPath){
     
     bool picking = true;
