@@ -8,6 +8,7 @@
 bool THERE_IS_IMAGE = 0;
 std::string SAVE_DIRECTORY = "Saved/";
 std::string TEMP_DIRECTORY = "Preview/";
+std::string inputPath;
 
 void check_make_dir(std::string &path){
     bool there_is_directory = std::filesystem::is_directory(path);
@@ -60,16 +61,30 @@ void save_image(Image &image,std::string &outputPath ){
 
 void saving_state(Image& image,std::string &outputPath){
         std::string save;
-
         bool saving = 1;
-        
         while(saving){
             std::cout << "Do you want to save?(y/n)"<<"\n";
             std::cin >> save;
             if (save=="y"){
-                output_path(outputPath);
+                bool picking = true;
+                while(picking){
+                    char saveOnFile;
+                    std::cout<<"Save on file?(y/n)\n";
+                    std::cin >> saveOnFile;
+                    if (saveOnFile=='y'){
+                        outputPath = inputPath;
+                        picking = false;
+                    }
+                    else if(saveOnFile=='n'){
+                        output_path(outputPath);
+                        outputPath = SAVE_DIRECTORY + outputPath;
+                        picking = false;
+                    }
+                    else{
+                        std::cout <<"invalid input\n";
+                    }
+                }
                 if(valid_extenstion(outputPath)){
-                    outputPath = SAVE_DIRECTORY + outputPath;
                     get_create_filepath(outputPath);
                     save_image(image,outputPath);
                     std::cout << "Saved succesfully!"<<"\n";
@@ -135,7 +150,7 @@ std::string get_filename(std::string path){
     // return path;
 }
 
-void invert_filter(Image &image,std::string &inputPath){
+void invert_filter(Image &image,std::string inputPath){
     for (int i = 0;i < image.width;i++){
         for (int j = 0;j < image.height;j++){
             for (int k = 0;k<image.channels;k++){
@@ -147,7 +162,7 @@ void invert_filter(Image &image,std::string &inputPath){
     save_image(image,inputPath);
 }
 
-void grayscale_filter(Image &image,std::string &inputPath){
+void grayscale_filter(Image &image,std::string inputPath){
   
     for (int i = 0;i < image.width;i++){
         unsigned int avg=0;
@@ -167,7 +182,7 @@ void grayscale_filter(Image &image,std::string &inputPath){
     std::cout << "grayscale applied"<<"\n";
 }
 
-void blackandwhite_filter(Image &image,std::string & inputPath){
+void blackandwhite_filter(Image &image,std::string  inputPath){
         for (int i = 0;i < image.width;i++){
         unsigned int avg=0;
             for (int j = 0;j < image.height;j++){
@@ -189,16 +204,16 @@ void blackandwhite_filter(Image &image,std::string & inputPath){
     std::cout << "Black&White applied"<<"\n";
 }
 
-void frame_filter(Image &image, std::string &inputPath){
+void frame_filter(Image &image, std::string inputPath){
     
     char c;
-    cout << "Choose frame: s = Simple, f = Fancy: ";
-    cin >> c;
+    std::cout << "Choose frame: s = Simple, f = Fancy: ";
+    std::cin >> c;
 
     while (c!='s' && c!='S' && c!='f' && c!='F')
     {
-        cout << "Invalid choice. Enter s or f: ";
-        cin >> c;
+        std::cout << "Invalid choice. Enter s or f: ";
+        std::cin >> c;
     }
 
     bool fancy = (c=='f' || c=='F');
@@ -208,7 +223,7 @@ void frame_filter(Image &image, std::string &inputPath){
         {255,255,0}, {16,163,222}, {0,0,0}, {255,255,255}
     };        
 
-    cout << "1) Red  2) Green  3) Blue  4) Purple\n"
+    std::cout << "1) Red  2) Green  3) Blue  4) Purple\n"
     << "5) Yellow  6) Cyan  7) Black  8) White\n";
     
     int c1;
@@ -217,20 +232,20 @@ void frame_filter(Image &image, std::string &inputPath){
 
     while (c1 < 1 || c1 > 8)
     {
-        cout << "Invalid choice. Enter 1-8: ";
-        cin >> c1;
+        std::cout << "Invalid choice. Enter 1-8: ";
+        std::cin >> c1;
     }
 
     int c2 = 0;
 
     if (fancy)
     {
-        cout << "Inner color: ";
-        cin >> c2;
+        std::cout << "Inner color: ";
+        std::cin >> c2;
         while (c2 < 1 || c2 > 8)
         {
-            cout << "Invalid choice. Enter 1-8: ";
-            cin >> c2;
+            std::cout << "Invalid choice. Enter 1-8: ";
+            std::cin >> c2;
         }
     }
 
@@ -273,13 +288,13 @@ void frame_filter(Image &image, std::string &inputPath){
             }
         }
     }
-    
+    image = nimage;
     inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(nimage,inputPath);
+    save_image(image,inputPath);
     std::cout << "Frame Added"<<"\n";
 }
 
-void weird_filter(Image &image,std::string &inputPath){
+void weird_filter(Image &image,std::string inputPath){
     for (int i = 0 ; i<image.width;i++){
         for (int j = 0; j<image.height/2;j++){
             std::swap(image(i,j,0),image(i,(image.height)-1-j,0));
@@ -292,7 +307,7 @@ void weird_filter(Image &image,std::string &inputPath){
     std::cout << "Weird applied"<<"\n";
 }
 
-void flip(Image &image,std::string &inputPath){
+void flip(Image &image,std::string inputPath){
     char choice = 'h';
     bool picking = true;
     while(picking){
@@ -329,7 +344,7 @@ void flip(Image &image,std::string &inputPath){
     std::cout << "Flip applied"<<"\n";
 }
 
-void brightness_filter(Image &image,std::string &inputPath){
+void brightness_filter(Image &image,std::string inputPath){
     std::cout << "Select either darken or lighten:\n	1- Darken\n	2- Lighten\n";
     bool picking = true;
     int selection = 0;
@@ -384,7 +399,7 @@ void brightness_filter(Image &image,std::string &inputPath){
     std::cout << "Brightness Edited"<<"\n";
 }
 
-void resize_filter(Image &image,std::string &inputPath){
+void resize_filter(Image &image,std::string inputPath){
     double newWidth, newHeight ;
 
     std::cout << "Please Enter Your prefered width and height : " ;
@@ -422,7 +437,7 @@ void resize_filter(Image &image,std::string &inputPath){
     std::cout << "Image resized"<<"\n";
 }
 
-void rotate_filter(Image &image,std::string &inputPath){
+void rotate_filter(Image &image,std::string inputPath){
     
     bool picking = true;
     int choice = 0;
@@ -494,7 +509,7 @@ int main(){
     bool running = true;
 
     Image img;
-    std::string inputPath,outputPath;
+    std::string outputPath;
 
     while(running){
 
