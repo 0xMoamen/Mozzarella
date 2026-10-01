@@ -1,8 +1,8 @@
 /*
-===================================================================================================
+
 Course: CS213 - Object Oriented Programming (2026-2027)
 Assignment: Assignment 1 - Part 1 (8 Filters + Main Menu)
-File Name: CS213_A1_Part1_S14_20250686_20250413_20250458_20250607.cpp
+File Name: CS213_A1_Part1_S14_20250686_20250458_20250607.cpp
 
 Program Description:
 This C++ file implements a console-based image processing application using the
@@ -19,7 +19,7 @@ users with options to either overwrite the original loaded image or save the new
 designated output directory.
 
 Team Details & Work Breakdown:
----------------------------------------------------------------------------------------------------
+
 Section: [s13,s14]
 Shared/Collaborative Tasks: 
 - Main Menu creation, integration of all filters, and File Handling (Load / Save / Exit).
@@ -27,26 +27,23 @@ Shared/Collaborative Tasks:
    ID: [20250686]
    Assigned Tasks / Filters:
    - Filter [1]: [ Grayscale Conversion, e.g., Filter 1: Grayscale]
+   - Filter [2]: [ Black and White, e.g., Filter 2: Black and White]
    - Filter [5]: [ Flip Image, e.g., Filter 5: Flip Image]
 
-2. Name: [Ammar Mohamed Abdelmagid]
-   ID: [20250413]
-   Assigned Tasks / Filters:
-   - Filter [2]: [ Black and White, e.g., Filter 2: Black and White]
-   - Filter [6]: [ Rotate Image, e.g., Filter 6: Rotate Image]
-
-3. Name: [Fady Emad Hanna]
+2. Name: [Fady Emad Hanna]
    ID: [20250458]
    Assigned Tasks / Filters:
    - Filter [3]: [ Invert Image, e.g., Filter 3: Invert Image]
    - Filter [7]: [Darken and Lighten, e.g., Filter 7: Brightness Filter]
 
-4. Name: [Mahmoud Hafez Abdelfatah]
+3. Name: [Mahmoud Hafez Abdelfatah]
    ID: [20250607]
    Assigned Tasks / Filters:
    - Filter [4]: [Adding a Frame to the Picture, e.g., Filter 4: Frame Filter]
+   - Filter [6]: [ Rotate Image, e.g., Filter 6: Rotate Image]
    - Filter [8]: [Resizing Images, e.g., Filter 8: Resize Filter]
-===================================================================================================
+
+   For the fourth member we got the permission from the doctor to form a team of three.
 */
 #include <string>
 #include <iostream>
