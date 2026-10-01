@@ -1,3 +1,53 @@
+/*
+===================================================================================================
+Course: CS213 - Object Oriented Programming (2026-2027)
+Assignment: Assignment 1 - Part 1 (8 Filters + Main Menu)
+File Name: CS213_A1_Part1_SectionNum_YourID_YourID_YourID_YourID.cpp
+
+Program Description:
+This C++ file implements a console-based image processing application using the
+`Image_Class.h` library. It shows a menu that continuously loops, 
+allowing users to load, edit, and save images until they choose to exit. 
+The program automatically manages file directories by creating "Saved/" and "Preview/" folders  
+so that output and temporary files are stored safely, and verifies valid image extensions
+(PNG, JPG, TGA, BMP, JPEG). Users can apply eight image manipulation filters: 
+Grayscale conversion, Black and White thresholding, Color Inversion, Frame addition 
+(with customizable colors and simple/fancy styles), Image Flipping (horizontal or vertical), 
+Rotation (90, 180, or 270 degrees), Brightness adjustment (darken or lighten by a specific percentage), 
+and Image Resizing to custom dimensions. Additionally, the integrated file handling system prompts 
+users with options to either overwrite the original loaded image or save the newly modified version to a 
+designated output directory.
+
+Team Details & Work Breakdown:
+---------------------------------------------------------------------------------------------------
+Section: [s13,s14]
+Shared/Collaborative Tasks: 
+- Main Menu creation, integration of all filters, and File Handling (Load / Save / Exit).
+1. Name: [Moamen Osama Zakaria]
+   ID: [20250686]
+   Assigned Tasks / Filters:
+   - Filter [1]: [ Grayscale Conversion, e.g., Filter 1: Grayscale]
+   - Filter [5]: [ Flip Image, e.g., Filter 5: Flip Image]
+
+2. Name: [Ammar Mohamed Abdelmagid]
+   ID: [20250413]
+   Assigned Tasks / Filters:
+   - Filter [2]: [ Black and White, e.g., Filter 2: Black and White]
+   - Filter [6]: [ Rotate Image, e.g., Filter 6: Rotate Image]
+
+3. Name: [Fady Emad Hanna]
+   ID: [20250458]
+   Assigned Tasks / Filters:
+   - Filter [3]: [ Invert Image, e.g., Filter 3: Invert Image]
+   - Filter [7]: [Darken and Lighten, e.g., Filter 7: Brightness Filter]
+
+4. Name: [Mahmoud Hafez Abdelfatah]
+   ID: [20250607]
+   Assigned Tasks / Filters:
+   - Filter [4]: [Adding a Frame to the Picture, e.g., Filter 4: Frame Filter]
+   - Filter [8]: [Resizing Images, e.g., Filter 8: Resize Filter]
+===================================================================================================
+*/
 #include <string>
 #include <iostream>
 #include<filesystem>
@@ -294,7 +344,7 @@ void frame_filter(Image &image, std::string inputPath){
     std::cout << "Frame Added"<<"\n";
 }
 
-void weird_filter(Image &image,std::string inputPath){
+/*void weird_filter(Image &image,std::string inputPath){
     for (int i = 0 ; i<image.width;i++){
         for (int j = 0; j<image.height/2;j++){
             std::swap(image(i,j,0),image(i,(image.height)-1-j,0));
@@ -305,8 +355,7 @@ void weird_filter(Image &image,std::string inputPath){
     inputPath = TEMP_DIRECTORY + get_filename(inputPath);
     save_image(image,inputPath);
     std::cout << "Weird applied"<<"\n";
-}
-
+}*/
 void flip(Image &image,std::string inputPath){
     char choice = 'h';
     bool picking = true;
@@ -515,17 +564,16 @@ int main(){
 
         std::cout << "1 - Load Image"<<"\n";
         std::cout << "2 - Grayscale filter"<<"\n";
-        std::cout << "3 - Invert Filter"<<"\n";
-        std::cout << "4 - Black & White Filter"<<"\n";
+        std::cout << "3 - Black & White Filter"<<"\n";
+        std::cout << "4 - Invert Filter"<<"\n";
         std::cout << "5 - Frame Filter"<<"\n";
         std::cout << "6 - Flip Filter"<<"\n";
-        std::cout << "7 - Weird Filter"<<"\n";
+        std::cout << "7 - Rotate Filter"<<"\n";
         std::cout << "8 - Brightness Filter"<<"\n";
         std::cout << "9 - Resize Filter"<<"\n";
-        std::cout << "10 - Rotate Filter"<<"\n";
 
-        std::cout << "11 - Save Image"<<"\n";
-        std::cout << "12 - Exit"<<"\n";
+        std::cout << "10 - Save Image"<<"\n";
+        std::cout << "11 - Exit"<<"\n";
         
         // Select filter 
         // filiter selection in function
@@ -547,16 +595,16 @@ int main(){
             }
             break;
         case 3:
-            if (THERE_IS_IMAGE){
-                invert_filter(img,inputPath);
+            if(THERE_IS_IMAGE){
+                blackandwhite_filter(img,inputPath);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
             }
             break;
         case 4:
-            if(THERE_IS_IMAGE){
-                blackandwhite_filter(img,inputPath);
+            if (THERE_IS_IMAGE){
+                invert_filter(img,inputPath);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -580,7 +628,7 @@ int main(){
             break;
         case 7:
             if(THERE_IS_IMAGE){
-                weird_filter(img,inputPath);
+                rotate_filter(img,inputPath);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -603,18 +651,10 @@ int main(){
             }
             break;
         case 10:
-            if(THERE_IS_IMAGE){
-                rotate_filter(img,inputPath);
-            }
-            else{
-                std::cout << "Please Load Image first "<<"\n";
-            }
-            break;
-        case 11:
             // save Image 
             saving_state(img,outputPath);
             break;
-        case 12:
+        case 11:
             // exit
             exiting(img,running);
             break;
