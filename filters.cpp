@@ -2,7 +2,7 @@
 ===================================================================================================
 Course: CS213 - Object Oriented Programming (2026-2027)
 Assignment: Assignment 1 - Part 1 (8 Filters + Main Menu)
-File Name: CS213_A1_Part1_SectionNum_YourID_YourID_YourID_YourID.cpp
+File Name: CS213_A1_Part1_S14_20250686_20250413_20250458_20250607.cpp
 
 Program Description:
 This C++ file implements a console-based image processing application using the
