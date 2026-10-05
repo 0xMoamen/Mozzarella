@@ -55,7 +55,7 @@ Shared/Collaborative Tasks:
 bool THERE_IS_IMAGE = 0;
 std::string SAVE_DIRECTORY = "Saved/";
 std::string TEMP_DIRECTORY = "Preview/";
-std::string inputPath;
+std::string inputPath="newImage.jpg";
 
 void check_make_dir(std::string &path){
     bool there_is_directory = std::filesystem::is_directory(path);
@@ -448,7 +448,7 @@ void brightness_filter(Image &image,std::string inputPath){
 void resize_filter(Image &image,std::string inputPath){
     double newWidth, newHeight ;
 
-    std::cout << "Please Enter Your prefered width and height : " ;
+    std::cout << "Please Enter Your prefered width and height \n" ;
 
     std::cout << "Width: ";
     std::cin >> newWidth ;
@@ -548,6 +548,127 @@ void rotate_filter(Image &image,std::string inputPath){
     std::cout << "Image rotated"<<"\n";
 }
 
+void CropImage(Image& image,std::string inputPath) {
+	std::cout << "Enter the coordinates of the top-left corner (x, y):\n";
+	int x, y;
+	bool validInput = false;
+	while (!validInput) {
+		std::cin >> x >> y;
+		if (std::cin.fail() || x < 0 || y < 0 || x >= image.width || y >= image.height) {
+			std::cout << "Invalid input. Please enter valid coordinates(positive integers).\n";
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+		} else {
+			validInput = true;
+		}
+	}
+
+	std::cout << "Enter the width and height of the crop area:\n";
+	int width, height;
+	validInput = false;
+	while (!validInput) {
+		std::cin >> width >> height;
+		if (std::cin.fail() || width <= 0 || height <= 0 || width > image.width - x || height > image.height - y) {
+			std::cout << "Invalid input. Please enter valid dimensions(positive integers).\n";
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+		} else {
+			validInput = true;
+		}
+	}
+
+	Image NewImage(width, height);
+
+	for (int i=x , i_new = 0;i<x+width;i++, i_new++) {
+		for (int j=y,j_new = 0;j<y+height;j++,j_new++) {
+			for (int k = 0;k < image.channels;k++) {
+				NewImage(i_new, j_new, k) = image(i, j, k);
+			}
+		}
+	}
+
+	image = NewImage;
+    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,inputPath);
+    std::cout << "Image cropped"<<"\n";
+}
+
+// Notes , first remove the THERE_IS_IMAGE check from here and the menu
+// Make 3 option, Direct merge "if same (w,h)"
+// Resize to biggest(w,h)
+// intersection merge
+void merge(Image &image){
+    std::string path1,path2;
+    std::cout << "Path1: ";std::cin>>path1;
+    std::cout << "Path2: ";std::cin>>path2;
+
+    Image image1(path1);
+    Image image2(path2);
+
+    image = image1; // Make the first image is the dominant and the first layer
+    ::inputPath = path1; // Make the outputPath you pass to save_state to the original pic for "SaveOnFile"
+
+    // Direct if same (w,h)
+    if (image1.height==image2.height){
+        if(image1.width==image2.width){
+            for (int i =0 ; i<image1.width ; i++){
+                for (int j=0 ; j<image1.height ; j++){
+                    for (int k=0 ; k<3; k++){
+                        image(i,j,k) =( image1(i,j,k)+image2(i,j,k))/2;
+                    }
+                }   
+            }
+        }
+    }
+    // Resize and intersection things
+    else{
+        int c1 = 1;
+        std::cout << "You have 2 options: (1) Resize, (2) Intersection: ";
+        std::cin >> c1;
+        if (c1==1){
+            int newWidth = image1.width;
+            int newHeight=image1.height;
+            Image newImage(newWidth,newHeight);
+            double xRatio =  (double)image2.width/newWidth;
+            double yRatio = (double)image2.height/newHeight;
+            for (int y=0 ; y<newHeight ; y++){
+                for (int x=0 ; x<newWidth ; x++){
+                    int pw = std::min((int)(x * xRatio), image2.width - 1);
+                    int ph = std::min((int)(y * yRatio), image2.height - 1);
+                        newImage (x, y, 0) = image2 (pw, ph, 0) ;
+                        newImage (x, y, 1) = image2 (pw, ph, 1) ;
+                        newImage (x, y, 2) = image2 (pw, ph, 2) ;
+                }
+            }
+            image2 = newImage;
+            for (int i =0 ; i<image1.width ; i++){
+                for (int j=0 ; j<image1.height ; j++){
+                    for (int k=0 ; k<3; k++){
+                        image(i,j,k) =(image1(i,j,k) + image2(i,j,k))/2;
+                    }
+                }   
+            }
+        }
+        else if(c1==2){
+            int width_inter = std::min(image1.width,image2.width);
+            int height_inter = std::min(image1.height,image2.height);
+            for (int x=0; x<width_inter; x++){
+                for (int y=0; y<height_inter; y++){
+                    for (int channel=0; channel<3; channel++){
+                        image(x,y,channel) = (image1(x,y,channel)+image2(x,y,channel))/2;
+                    }
+                }
+            }
+
+        }
+
+    }
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    
+    std::cout << "Merged"<<"\n";
+
+}
 int main(){
     
     get_create_filepath("Saved/");
