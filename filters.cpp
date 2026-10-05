@@ -554,7 +554,7 @@ void CropImage(Image& image,std::string inputPath) {
 	bool validInput = false;
 	while (!validInput) {
 		std::cin >> x >> y;
-		if (std::cin.fail() || x < 0 || y < 0) {
+		if (std::cin.fail() || x < 0 || y < 0 || x >= image.width || y >= image.height) {
 			std::cout << "Invalid input. Please enter valid coordinates(positive integers).\n";
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
@@ -568,7 +568,7 @@ void CropImage(Image& image,std::string inputPath) {
 	validInput = false;
 	while (!validInput) {
 		std::cin >> width >> height;
-		if (std::cin.fail() || width <= 0 || height <= 0) {
+		if (std::cin.fail() || width <= 0 || height <= 0 || width > image.width - x || height > image.height - y) {
 			std::cout << "Invalid input. Please enter valid dimensions(positive integers).\n";
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
