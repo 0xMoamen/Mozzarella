@@ -548,6 +548,51 @@ void rotate_filter(Image &image,std::string inputPath){
     std::cout << "Image rotated"<<"\n";
 }
 
+void CropImage(Image& image,std::string inputPath) {
+	std::cout << "Enter the coordinates of the top-left corner (x, y):\n";
+	int x, y;
+	bool validInput = false;
+	while (!validInput) {
+		std::cin >> x >> y;
+		if (std::cin.fail() || x < 0 || y < 0) {
+			std::cout << "Invalid input. Please enter valid coordinates(positive integers).\n";
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+		} else {
+			validInput = true;
+		}
+	}
+
+	std::cout << "Enter the width and height of the crop area:\n";
+	int width, height;
+	validInput = false;
+	while (!validInput) {
+		std::cin >> width >> height;
+		if (std::cin.fail() || width <= 0 || height <= 0) {
+			std::cout << "Invalid input. Please enter valid dimensions(positive integers).\n";
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+		} else {
+			validInput = true;
+		}
+	}
+
+	Image NewImage(width, height);
+
+	for (int i=x , i_new = 0;i<x+width;i++, i_new++) {
+		for (int j=y,j_new = 0;j<y+height;j++,j_new++) {
+			for (int k = 0;k < image.channels;k++) {
+				NewImage(i_new, j_new, k) = image(i, j, k);
+			}
+		}
+	}
+
+	image = NewImage;
+    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,inputPath);
+    std::cout << "Image cropped"<<"\n";
+}
+
 int main(){
     
     get_create_filepath("Saved/");
@@ -573,7 +618,7 @@ int main(){
         std::cout << "11 - Exit"<<"\n";
         
         // Select filter 
-        // filiter selection in function
+        // filter selection in function
 
         int number;
         
