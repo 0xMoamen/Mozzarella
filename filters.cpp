@@ -671,8 +671,7 @@ void merge(Image& image,std::string inputPath){
 }
 void purple_filter(Image& image,std::string inputPath) {
 	for (int i = 0; i < image.width; i++) {
-		for (int j = 0; j < image.height; j++) {
-			
+		for (int j = 0; j < image.height; j++) {	
 		if ((image (i,j,0) * 1.2) > 255)
 			image(i, j, 0) = 255;
 		else
@@ -689,7 +688,6 @@ void purple_filter(Image& image,std::string inputPath) {
 			image(i, j, 2) *= 1.2;
 	
 		}
-        
 	}
 
     inputPath = TEMP_DIRECTORY + get_filename(inputPath);
