@@ -47,7 +47,7 @@ Shared/Collaborative Tasks:
 */
 #include <string>
 #include <iostream>
-#include<filesystem>
+#include <filesystem>
 #include <algorithm>
 #include "libraries/Image_Class.h"
 
@@ -597,7 +597,7 @@ void CropImage(Image& image,std::string inputPath) {
 // Make 3 option, Direct merge "if same (w,h)"
 // Resize to biggest(w,h)
 // intersection merge
-void merge(Image &image){
+void merge(Image& image,std::string inputPath){
     std::string path1,path2;
     std::cout << "Path1: ";std::cin>>path1;
     std::cout << "Path2: ";std::cin>>path2;
@@ -668,6 +668,33 @@ void merge(Image &image){
     
     std::cout << "Merged"<<"\n";
 
+}
+void purple_filter(Image& image,std::string inputPath) {
+	for (int i = 0; i < image.width; i++) {
+		for (int j = 0; j < image.height; j++) {
+			
+		if ((image (i,j,0) * 1.2) > 255)
+			image(i, j, 0) = 255;
+		else
+			image(i, j, 0) *= 1.2;
+
+		if ((image(i, j, 1) * 0.81) < 0)
+			image(i, j, 1) = 0;
+		else
+			image(i, j, 1) *= 0.81;
+		
+		if ((image(i, j, 2) * 1.2) > 255)
+			image(i, j, 2) = 255;
+		else
+			image(i, j, 2) *= 1.2;
+	
+		}
+        
+	}
+
+    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,inputPath);
+    std::cout << "Image is purple"<<"\n";
 }
 int main(){
     
