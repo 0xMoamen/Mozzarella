@@ -565,10 +565,12 @@ void CropImage(Image& image) {
 	}
 
 	std::cout << "Enter the width and height of the crop area:\n";
+    std::cout <<"Max Width: "<<image.width - x<< "Max height: "<<image.height - y<< "\n";
 	int width, height;
 	validInput = false;
 	while (!validInput) {
 		std::cin >> width >> height;
+       
 		if (std::cin.fail() || width <= 0 || height <= 0 || width > image.width - x || height > image.height - y) {
 			std::cout << "Invalid input. Please enter valid dimensions(positive integers).\n";
 			std::cin.clear();
