@@ -197,7 +197,7 @@ std::string get_filename(std::string path){
     // return path;
 }
 
-void invert_filter(Image &image,std::string inputPath){
+void invert_filter(Image &image){
     for (int i = 0;i < image.width;i++){
         for (int j = 0;j < image.height;j++){
             for (int k = 0;k<image.channels;k++){
@@ -205,11 +205,12 @@ void invert_filter(Image &image,std::string inputPath){
             }
         }
     }
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "Invert Applied\n";
 }
 
-void grayscale_filter(Image &image,std::string inputPath){
+void grayscale_filter(Image &image){
   
     for (int i = 0;i < image.width;i++){
         unsigned int avg=0;
@@ -224,12 +225,12 @@ void grayscale_filter(Image &image,std::string inputPath){
 
         }
     }
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "grayscale applied"<<"\n";
 }
 
-void blackandwhite_filter(Image &image,std::string  inputPath){
+void blackandwhite_filter(Image &image){
         for (int i = 0;i < image.width;i++){
         unsigned int avg=0;
             for (int j = 0;j < image.height;j++){
@@ -246,12 +247,12 @@ void blackandwhite_filter(Image &image,std::string  inputPath){
                 image.setPixel(i,j,2,avg);
             }
     }
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "Black&White applied"<<"\n";
 }
 
-void frame_filter(Image &image, std::string inputPath){
+void frame_filter(Image &image){
     
     char c;
     std::cout << "Choose frame: s = Simple, f = Fancy: ";
@@ -336,8 +337,8 @@ void frame_filter(Image &image, std::string inputPath){
         }
     }
     image = nimage;
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "Frame Added"<<"\n";
 }
 
@@ -353,7 +354,7 @@ void frame_filter(Image &image, std::string inputPath){
     save_image(image,inputPath);
     std::cout << "Weird applied"<<"\n";
 }*/
-void flip(Image &image,std::string inputPath){
+void flip(Image &image){
     char choice = 'h';
     bool picking = true;
     while(picking){
@@ -385,12 +386,12 @@ void flip(Image &image,std::string inputPath){
     }
 
 
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "Flip applied"<<"\n";
 }
 
-void brightness_filter(Image &image,std::string inputPath){
+void brightness_filter(Image &image){
     std::cout << "Select either darken or lighten:\n	1- Darken\n	2- Lighten\n";
     bool picking = true;
     int selection = 0;
@@ -440,12 +441,12 @@ void brightness_filter(Image &image,std::string inputPath){
 			}
 		}
 	}
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "Brightness Edited"<<"\n";
 }
 
-void resize_filter(Image &image,std::string inputPath){
+void resize_filter(Image &image){
     double newWidth, newHeight ;
 
     std::cout << "Please Enter Your prefered width and height \n" ;
@@ -478,12 +479,12 @@ void resize_filter(Image &image,std::string inputPath){
     }
 
     image = newImage; 
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "Image resized"<<"\n";
 }
 
-void rotate_filter(Image &image,std::string inputPath){
+void rotate_filter(Image &image){
     
     bool picking = true;
     int choice = 0;
@@ -543,12 +544,12 @@ void rotate_filter(Image &image,std::string inputPath){
         image = newImage;
     }
 
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "Image rotated"<<"\n";
 }
 
-void CropImage(Image& image,std::string inputPath) {
+void CropImage(Image& image) {
 	std::cout << "Enter the coordinates of the top-left corner (x, y):\n";
 	int x, y;
 	bool validInput = false;
@@ -588,8 +589,8 @@ void CropImage(Image& image,std::string inputPath) {
 	}
 
 	image = NewImage;
-    inputPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,inputPath);
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
     std::cout << "Image cropped"<<"\n";
 }
 
@@ -669,6 +670,66 @@ void merge(Image &image){
     std::cout << "Merged"<<"\n";
 
 }
+void sunlight_filter(Image &image){
+    for (int i=0;i<image.width;i++){
+        for (int j=0;j<image.height;j++){
+            int r = image(i,j,0);// r
+            int g = image(i,j,1);// r
+            r+=40;
+            g+=40;
+            r = std::clamp(r,0,255);
+            g = std::clamp(g,0,255);
+            image(i,j,0)=r;
+            image(i,j,1)=g;
+        }
+    }
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "Sunlight Added !\n";
+}
+void infrared_filter(Image &image){
+    int power = 50;
+    std::cout << "Enter intensity of red (50,100,200): ";
+    std::cin >>power;
+    for (int i = 0;i < image.width;i++){
+        for (int j = 0;j < image.height;j++){
+            for (int k = 0;k<image.channels;k++){
+                image(i,j,k) = 255 - image(i,j,k);
+            }
+            int r = image(i,j,0)+power; // 50 good and natural,100 cool,200 whats in the assignment
+            r = std::clamp(r,0,255);
+            image(i,j,0) = r;
+        }
+    }
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "Infrared Applied\n";
+}
+void purple_filter(Image& image) {
+	for (int i = 0; i < image.width; i++) {
+		for (int j = 0; j < image.height; j++) {	
+		if ((image (i,j,0) * 1.2) > 255)
+			image(i, j, 0) = 255;
+		else
+			image(i, j, 0) *= 1.2;
+
+		if ((image(i, j, 1) * 0.81) < 0)
+			image(i, j, 1) = 0;
+		else
+			image(i, j, 1) *= 0.81;
+		
+		if ((image(i, j, 2) * 1.2) > 255)
+			image(i, j, 2) = 255;
+		else
+			image(i, j, 2) *= 1.2;
+	
+		}
+	}
+
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "Image is purple"<<"\n";
+}
 int main(){
     
     get_create_filepath("Saved/");
@@ -689,9 +750,14 @@ int main(){
         std::cout << "7 - Rotate Filter"<<"\n";
         std::cout << "8 - Brightness Filter"<<"\n";
         std::cout << "9 - Resize Filter"<<"\n";
+        std::cout << "10 - Crop Filter"<<"\n";
+        std::cout << "11 - Merge Filter"<<"\n";
+        std::cout << "12 - Sunlight Filter"<<"\n";
+        std::cout << "13 - Infrared Filter"<<"\n";
+        std::cout << "14 - Purple Filter"<<"\n";
 
-        std::cout << "10 - Save Image"<<"\n";
-        std::cout << "11 - Exit"<<"\n";
+        std::cout << "15 - Save Image"<<"\n";
+        std::cout << "16 - Exit"<<"\n";
         
         // Select filter 
         // filiter selection in function
@@ -706,7 +772,7 @@ int main(){
             break;
         case 2:
             if(THERE_IS_IMAGE){
-                grayscale_filter(img,inputPath);
+                grayscale_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -714,7 +780,7 @@ int main(){
             break;
         case 3:
             if(THERE_IS_IMAGE){
-                blackandwhite_filter(img,inputPath);
+                blackandwhite_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -722,7 +788,7 @@ int main(){
             break;
         case 4:
             if (THERE_IS_IMAGE){
-                invert_filter(img,inputPath);
+                invert_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -730,7 +796,7 @@ int main(){
             break;
         case 5:
             if(THERE_IS_IMAGE){
-                frame_filter(img,inputPath);
+                frame_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -738,7 +804,7 @@ int main(){
             break;
         case 6:
             if(THERE_IS_IMAGE){
-                flip(img,inputPath);
+                flip(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -746,7 +812,7 @@ int main(){
             break;
         case 7:
             if(THERE_IS_IMAGE){
-                rotate_filter(img,inputPath);
+                rotate_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -754,7 +820,7 @@ int main(){
             break;
         case 8:
             if(THERE_IS_IMAGE){
-                brightness_filter(img,inputPath);
+                brightness_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -762,17 +828,58 @@ int main(){
             break;
         case 9:
             if(THERE_IS_IMAGE){
-                resize_filter(img,inputPath);
+                resize_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
             }
             break;
         case 10:
+            if(THERE_IS_IMAGE){
+                CropImage(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+        case 11:
+            if(THERE_IS_IMAGE){
+                merge(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+        case 12:
+            if(THERE_IS_IMAGE){
+                sunlight_filter(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+        case 13:
+            if(THERE_IS_IMAGE){
+                infrared_filter(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+        case 14:
+            if(THERE_IS_IMAGE){
+                purple_filter(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+
+        case 15:
             // save Image 
             saving_state(img,outputPath);
             break;
-        case 11:
+        case 16:
             // exit
             exiting(img,running);
             break;
