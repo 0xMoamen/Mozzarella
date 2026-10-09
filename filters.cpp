@@ -778,7 +778,48 @@ void detect_edges(Image& image) {
     save_image(image,previewPath);
     std::cout << "edges detected"<<"\n";
 }
+void blur(Image &image){
+    Image newImage = image;
 
+    for (int x =0;x<image.width; x++){
+        for (int y=0;y<image.height;y++){
+            for (int c=0;c<3;c++){
+                int temp = 0;
+                int count=0;
+                int steps = 10; // how many pixel will he take around the pixel in each direction = intensity of blur
+                for (int step =1; step<=steps;step++){
+                    //up
+                    if (y-step>=0){
+                        temp+=image(x,y-step,c);
+                        count++;
+                    }
+                    //left
+                    if (x-step>=0){
+                        temp+=image(x-step,y,c);
+                        count++;
+                    }
+                    //down
+                    if (y+step>=0 && y+step<=image.height){
+                        temp+=image(x,y+step,c);
+                        count++;
+                    }
+                    //right
+                    if (x+step>=0 && x+step<=image.width){
+                        temp+=image(x+step,y,c);
+                        count++;
+                    }
+
+                }
+                temp = temp/count; //avg
+                newImage(x,y,c) = temp;
+            }
+        }
+    }
+    image = newImage;
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "Blurred!"<<"\n";
+}
 
 int main(){
     
@@ -808,9 +849,10 @@ int main(){
         std::cout << "14 - Purple Filter"<<"\n";
         std::cout << "15 - Tv-Filter Filter"<<"\n";
         std::cout << "16 - Detect Edges Filter"<<"\n";
+        std::cout << "17 - Blur Filter"<<"\n";
 
-        std::cout << "17 - Save Image"<<"\n";
-        std::cout << "18 - Exit"<<"\n";
+        std::cout << "18 - Save Image"<<"\n";
+        std::cout << "19 - Exit"<<"\n";
         
         // Select filter 
         // filiter selection in function
@@ -943,12 +985,20 @@ int main(){
                 std::cout << "Please Load Image first "<<"\n";
             }
             break;
-
         case 17:
+            if(THERE_IS_IMAGE){
+                blur(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+
+        case 18:
             // save Image 
             saving_state(img,outputPath);
             break;
-        case 18:
+        case 19:
             // exit
             exiting(img,running);
             break;
