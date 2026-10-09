@@ -690,24 +690,26 @@ void sunlight_filter(Image &image){
     save_image(image,previewPath);
     std::cout << "Sunlight Added !\n";
 }
-void infrared_filter(Image &image){
-    int power = 50;
-    std::cout << "Enter intensity of red (50,100,200): ";
-    std::cin >>power;
-    for (int i = 0;i < image.width;i++){
-        for (int j = 0;j < image.height;j++){
-            for (int k = 0;k<image.channels;k++){
-                image(i,j,k) = 255 - image(i,j,k);
-            }
-            int r = image(i,j,0)+power; // 50 good and natural,100 cool,200 whats in the assignment
-            r = std::clamp(r,0,255);
-            image(i,j,0) = r;
-        }
-    }
-    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
-    save_image(image,previewPath);
-    std::cout << "Infrared Applied\n";
-}
+
+// void infrared_filter(Image &image){
+//     int power = 200;
+//     std::cout << "Enter intensity of red (50,100,200): ";
+//     std::cin >>power;
+//     for (int i = 0;i < image.width;i++){
+//         for (int j = 0;j < image.height;j++){
+//             for (int k = 0;k<3;k++){
+//                 image(i,j,k) = 255 - image(i,j,k);
+//             } // invert
+//             int r = image(i,j,0)+power; // 50 good and natural,100 cool,200 whats in the assignment
+//             r = std::clamp(r,0,255);
+//             image(i,j,0) = r;
+//         }
+//     }
+//     std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+//     save_image(image,previewPath);
+//     std::cout << "Infrared Applied\n";
+// }
+
 void purple_filter(Image& image) {
 	for (int i = 0; i < image.width; i++) {
 		for (int j = 0; j < image.height; j++) {	
@@ -778,49 +780,156 @@ void detect_edges(Image& image) {
     save_image(image,previewPath);
     std::cout << "edges detected"<<"\n";
 }
-void blur(Image &image){
-    Image newImage = image;
+// void blur(Image &image){
+//     Image newImage = image;
 
-    for (int x =0;x<image.width; x++){
-        for (int y=0;y<image.height;y++){
-            for (int c=0;c<3;c++){
-                int temp = 0;
-                int count=0;
-                int steps = 10; // how many pixel will he take around the pixel in each direction = intensity of blur
-                for (int step =1; step<=steps;step++){
-                    //up
-                    if (y-step>=0){
-                        temp+=image(x,y-step,c);
-                        count++;
-                    }
-                    //left
-                    if (x-step>=0){
-                        temp+=image(x-step,y,c);
-                        count++;
-                    }
-                    //down
-                    if (y+step>=0 && y+step<=image.height){
-                        temp+=image(x,y+step,c);
-                        count++;
-                    }
-                    //right
-                    if (x+step>=0 && x+step<=image.width){
-                        temp+=image(x+step,y,c);
-                        count++;
-                    }
+//     for (int x =0;x<image.width; x++){
+//         for (int y=0;y<image.height;y++){
+//             for (int c=0;c<3;c++){
+//                 int temp = 0;
+//                 int count=0;
+//                 int steps = 10; // how many pixel will he take around the pixel in each direction = intensity of blur
+//                 for (int step =1; step<=steps;step++){
+//                     //up
+//                     if (y-step>=0){
+//                         temp+=image(x,y-step,c);
+//                         count++;
+//                     }
+//                     //left
+//                     if (x-step>=0){
+//                         temp+=image(x-step,y,c);
+//                         count++;
+//                     }
+//                     //down
+//                     if (y+step>=0 && y+step<=image.height){
+//                         temp+=image(x,y+step,c);
+//                         count++;
+//                     }
+//                     //right
+//                     if (x+step>=0 && x+step<=image.width){
+//                         temp+=image(x+step,y,c);
+//                         count++;
+//                     }
 
+//                 }
+//                 temp = temp/count; //avg
+//                 newImage(x,y,c) = temp;
+//             }
+//         }
+//     }
+//     image = newImage;
+//     std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+//     save_image(image,previewPath);
+//     std::cout << "Blurred!"<<"\n";
+// }
+
+void blur_filter (Image &image){
+
+    int h = image.height ;
+    int w = image.width ;
+    int R = 0 ;
+    int G = 0 ;
+    int B = 0 ;
+
+    int n = 7 ;
+    // cout << "Enter Thr Blur Intecity Between 1 to 5  :" << endl ;
+    // cin >> n ;
+
+    Image nimage(w, h);
+
+    for (int y = 0; y < image.height; y++)
+    {
+        for (int x = 0; x < image.width; x++)
+        {
+            R = image(x,y,0) ;
+            G = image(x,y,1) ;
+            B = image(x,y,2) ;
+            int count = 1 ;
+
+            int RM = 0 ;
+            int GM = 0 ;
+            int BM = 0 ;
+
+            for (int i=1 ; i<=n ; i++){
+
+                if (x >= 0 && x < w-i ){  // add the right
+                    count+=1 ;
+                    RM += image(x+i,y,0) ;
+                    GM += image(x+i,y,1) ;
+                    BM += image(x+i,y,2) ;
                 }
-                temp = temp/count; //avg
-                newImage(x,y,c) = temp;
+
+                if (x >= i && x < w ){    // add the left
+                    count+=1 ;
+                    RM += image(x-i,y,0) ;
+                    GM += image(x-i,y,1) ;
+                    BM += image(x-i,y,2) ;
+                }
+
+                if (y >= 0 && y < h-i ){   // add the bottom
+                    count+=1 ;
+                    RM += image(x,y+i,0) ;
+                    GM += image(x,y+i,1) ;
+                    BM += image(x,y+i,2) ;
+                }
+
+                if (y >= i && y < h ){    // add the top
+                    count+=1 ;
+                    RM += image(x,y-i,0) ;
+                    GM += image(x,y-i,1) ;
+                    BM += image(x,y-i,2) ;
+                }
+
+
             }
+
+
+
+            nimage(x,y,0) = ((R+RM)/count);
+            nimage(x,y,1) = ((G+GM)/count);
+            nimage(x,y,2) = ((B+BM)/count);
+
+
+
         }
     }
-    image = newImage;
+    image  = nimage;
     std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
     save_image(image,previewPath);
     std::cout << "Blurred!"<<"\n";
-}
 
+}
+void infrared_filter (Image &image){
+
+    int R = 0;
+    int G = 0;
+    int B = 0;
+
+    for (int y = 0; y < image.height; y++)
+    {
+        for (int x = 0; x < image.width; x++)
+        {
+
+            R = image(x,y,0) ;
+            G = image(x,y,1) ;
+            B = image(x,y,2) ;
+
+            int gray = 0.299 * R + 0.587 * G + 0.114 * B;
+            int inv = 255 - gray;
+
+            image(x,y,0) = 255;
+            image(x,y,1) = inv;
+            image(x,y,2) = inv;
+
+            // الفاتح احمر الغامق ابيض
+
+        }
+    }
+    std::cout << "Infrared Applied\n";
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+
+}
 int main(){
     
     get_create_filepath("Saved/");
@@ -987,7 +1096,7 @@ int main(){
             break;
         case 17:
             if(THERE_IS_IMAGE){
-                blur(img);
+                blur_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
