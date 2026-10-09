@@ -49,6 +49,7 @@ Shared/Collaborative Tasks:
 #include <iostream>
 #include<filesystem>
 #include <algorithm>
+#include <cstdlib>
 #include "libraries/Image_Class.h"
 
 
@@ -732,6 +733,53 @@ void purple_filter(Image& image) {
     save_image(image,previewPath);
     std::cout << "Image is purple"<<"\n";
 }
+void tv_filter(Image &image){
+
+    // Color Distortions
+    for (int i =0;i<image.width;i++){
+        for (int y=0;y<image.height;y+=3){ // Play in how many lines applied to for intensity
+            for (int channel =0;channel<3;channel++){
+                int temp = image(i,y,channel);
+                temp -= std::rand()%200; 
+                temp = std::clamp(temp,0,255);
+                image(i,y,channel)=temp;
+            }
+        }
+    }
+
+    
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "Tv-Filter Applied \n";
+}
+void detect_edges(Image& image) {
+	
+    grayscale_filter(image);
+
+	int pivot = 35;
+
+	for (int i = 0; i < image.width - 1;++i) {
+		for (int j = 0;j < image.height - 1; ++j) {
+			
+			if ( std:: abs(image(i, j, 0) - image(i+1,j,0)) >= pivot || std::abs(image(i, j, 0) - image(i,j+1,0)) >= pivot) {
+				image(i, j, 0) = 0;
+				image(i, j, 1) = 0;
+				image(i, j, 2) = 0;
+			}
+			else {
+				image(i, j, 0) = 255;
+				image(i, j, 1) = 255;
+				image(i, j, 2) = 255;
+			}
+		}
+	}	
+
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "edges detected"<<"\n";
+}
+
+
 int main(){
     
     get_create_filepath("Saved/");
@@ -744,6 +792,7 @@ int main(){
     while(running){
 
         std::cout << "1 - Load Image"<<"\n";
+        
         std::cout << "2 - Grayscale filter"<<"\n";
         std::cout << "3 - Black & White Filter"<<"\n";
         std::cout << "4 - Invert Filter"<<"\n";
@@ -757,9 +806,11 @@ int main(){
         std::cout << "12 - Sunlight Filter"<<"\n";
         std::cout << "13 - Infrared Filter"<<"\n";
         std::cout << "14 - Purple Filter"<<"\n";
+        std::cout << "15 - Tv-Filter Filter"<<"\n";
+        std::cout << "16 - Detect Edges Filter"<<"\n";
 
-        std::cout << "15 - Save Image"<<"\n";
-        std::cout << "16 - Exit"<<"\n";
+        std::cout << "17 - Save Image"<<"\n";
+        std::cout << "18 - Exit"<<"\n";
         
         // Select filter 
         // filiter selection in function
@@ -774,7 +825,7 @@ int main(){
             break;
         case 2:
             if(THERE_IS_IMAGE){
-                grayscale_filter(img);
+                tv_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
@@ -876,12 +927,28 @@ int main(){
                 std::cout << "Please Load Image first "<<"\n";
             }
             break;
-
         case 15:
+            if(THERE_IS_IMAGE){
+                tv_filter(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+        case 16:
+            if(THERE_IS_IMAGE){
+                detect_edges(img);
+            }
+            else{
+                std::cout << "Please Load Image first "<<"\n";
+            }
+            break;
+
+        case 17:
             // save Image 
             saving_state(img,outputPath);
             break;
-        case 16:
+        case 18:
             // exit
             exiting(img,running);
             break;
