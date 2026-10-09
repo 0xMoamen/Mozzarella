@@ -825,7 +825,7 @@ int main(){
             break;
         case 2:
             if(THERE_IS_IMAGE){
-                tv_filter(img);
+                grayscale_filter(img);
             }
             else{
                 std::cout << "Please Load Image first "<<"\n";
