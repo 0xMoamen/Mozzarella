@@ -47,8 +47,9 @@ Shared/Collaborative Tasks:
 */
 #include <string>
 #include <iostream>
-#include<filesystem>
+#include <filesystem>
 #include <algorithm>
+#include <cmath>
 #include "libraries/Image_Class.h"
 
 
@@ -548,6 +549,40 @@ void rotate_filter(Image &image){
     save_image(image,previewPath);
     std::cout << "Image rotated"<<"\n";
 }
+
+/* 
+   Edge detection filter
+   turning the image to grayscale first to make the red,greeen, and blue into the same value and make the comparison easy 
+   then checking the difference between the pixel and its right and down pixel using only the red channel since all channels 
+   are the same after grayscale depending on the pivot value we can determine if the pixel is an edge or not and color it black or white
+*/
+void detect_edges(Image& image) {
+	
+    grayscale_filter(image);
+
+	int pivot = 35;
+
+	for (int i = 0; i < image.width - 1;++i) {
+		for (int j = 0;j < image.height - 1; ++j) {
+			
+			if ( std:: abs(image(i, j, 0) - image(i+1,j,0)) >= pivot || std::abs(image(i, j, 0) - image(i,j+1,0)) >= pivot) {
+				image(i, j, 0) = 0;
+				image(i, j, 1) = 0;
+				image(i, j, 2) = 0;
+			}
+			else {
+				image(i, j, 0) = 255;
+				image(i, j, 1) = 255;
+				image(i, j, 2) = 255;
+			}
+		}
+	}	
+
+    std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    save_image(image,previewPath);
+    std::cout << "edges detected"<<"\n";
+}
+
 
 void CropImage(Image& image) {
 	std::cout << "Enter the coordinates of the top-left corner (x, y):\n";
