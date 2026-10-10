@@ -50,13 +50,15 @@ Shared/Collaborative Tasks:
 #include<filesystem>
 #include <algorithm>
 #include <cstdlib>
+#include <vector>
 #include "libraries/Image_Class.h"
 
 
 bool THERE_IS_IMAGE = 0;
 std::string SAVE_DIRECTORY = "Saved/";
 std::string TEMP_DIRECTORY = "Preview/";
-std::string inputPath="newImage.jpg";
+std::string inputPath="newImage.jpg"; //default value if there is no inputPath
+// std::vector<Image>History; //for undo
 
 void check_make_dir(std::string &path){
     bool there_is_directory = std::filesystem::is_directory(path);
@@ -65,19 +67,20 @@ void check_make_dir(std::string &path){
     }
 
 }
-void get_create_filepath(std::filesystem::path path){
+// when user do the outpath like "notcreatedfolder/newImage.jpg" it makes the folder for the image
+void get_create_filepath(std::filesystem::path path){ 
     if (path.parent_path()!=""){
         std::filesystem::create_directories(path.parent_path());
     }
 }
 
-// clear the temp folder after save
+// clear the temp folder after save and exit
 void remove_temp(){
     std::filesystem::remove_all("Preview");
     std::filesystem::create_directory("Preview/");
 }
 
-//  parser to get the extension from the input 
+//  parser to get the extension from the path 
 std::string extension(std::string &path){
     std::string ext = std::filesystem::path(path).extension().string();
     if (ext!="" && ext[0]=='.'){
@@ -86,6 +89,7 @@ std::string extension(std::string &path){
     return "";
     
 }
+// we check the extension when loading and saving images
 bool valid_extenstion(std::string &path){
     std::string types[5] = {"png","jpg","tga","bmp","jpeg"};
     std::string x = extension(path);
@@ -106,7 +110,7 @@ void output_path(std::string &outputPath){
 void save_image(Image &image,std::string &outputPath ){
     image.saveImage(outputPath);
 }
-
+//check whether the use will save or not and on same file or not 
 void saving_state(Image& image,std::string &outputPath){
         std::string save;
         bool saving = 1;
@@ -153,7 +157,7 @@ void saving_state(Image& image,std::string &outputPath){
 }
 
 
-// exiting function
+// exiting function 
 void exiting(Image &image,bool &running){
     // std::cout << "Do you want to keep editing?(y/n)"<<"\n";
     if (THERE_IS_IMAGE){
@@ -164,7 +168,7 @@ void exiting(Image &image,bool &running){
     remove_temp();
 }
 
-// function to check wheter the image there or not
+// function to check wheter the image exists
 bool file_exists(std::string &path){
     bool exists = std::filesystem::exists(path);
     return exists;
@@ -188,7 +192,7 @@ void load_image(Image &image,std::string &inputPath){
     }
 }
 
-
+//get the filename from the user path to create the file in preview folder without the any other folders inside
 std::string get_filename(std::string path){
     signed int found = path.find_last_of("/");
     // if (found!=-1){
@@ -736,7 +740,7 @@ void purple_filter(Image& image) {
     std::cout << "Image is purple"<<"\n";
 }
 void tv_filter(Image &image){
-
+    
     // Color Distortions
     for (int i =0;i<image.width;i++){
         for (int y=0;y<image.height;y+=3){ // Play in how many lines applied to for intensity
@@ -900,7 +904,7 @@ void blur_filter (Image &image){
 
 }
 void infrared_filter (Image &image){
-
+    
     int R = 0;
     int G = 0;
     int B = 0;
@@ -927,11 +931,39 @@ void infrared_filter (Image &image){
     }
     std::cout << "Infrared Applied\n";
     std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+    
     save_image(image,previewPath);
 
 }
+
+// void undo(Image &image){
+//     // stack pop
+//     if(History.size()>1){
+//         History.pop_back();
+//         // image = top
+//         image = History.back();
+//         // preview
+//         std::string previewPath = TEMP_DIRECTORY + get_filename(inputPath);
+//         save_image(image,previewPath);
+//     }
+//     else{
+//         std::cout << "Nothing to undo\n";
+//         return;
+//     }
+
+// }
+
 int main(){
-    
+    std::cout << R"(
+    ========================================================================================
+    || |\   /|     ___    |----   |----   /\     |---\    |-----  |       |       /---\   ||
+    || | \ / |    |   |      /       /   /  \    |   |    |       |       |       |   |   ||
+    || |     |    |   |     /       /   /----\   |---/    |---    |       |       |---|   ||
+    || |     |    |   |    /       /    |    |   | \      |       |       |       |   |   ||
+    || |     |    |___|   /----   /---- |    |   |   \    |-----  |-----  |-----  |   |   ||
+    ========================================================================================
+    )"<<"\n";
+
     get_create_filepath("Saved/");
     get_create_filepath("Preview/");
     bool running = true;
@@ -940,9 +972,8 @@ int main(){
     std::string outputPath;
 
     while(running){
-
         std::cout << "1 - Load Image"<<"\n";
-        
+
         std::cout << "2 - Grayscale filter"<<"\n";
         std::cout << "3 - Black & White Filter"<<"\n";
         std::cout << "4 - Invert Filter"<<"\n";
@@ -963,9 +994,6 @@ int main(){
         std::cout << "18 - Save Image"<<"\n";
         std::cout << "19 - Exit"<<"\n";
         
-        // Select filter 
-        // filiter selection in function
-
         int number;
         
         std::cin>>number;
@@ -1103,6 +1131,10 @@ int main(){
             }
             break;
 
+        // case 18:
+        //     // undo
+        //     undo(img);
+        //     break;
         case 18:
             // save Image 
             saving_state(img,outputPath);
@@ -1120,7 +1152,4 @@ int main(){
 
     }
 
-    /*
-    original pic > filter > new pic > image var = new pic
-    */
 }
