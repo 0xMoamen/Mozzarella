@@ -1,8 +1,8 @@
 /*
 
 Course: CS213 - Object Oriented Programming (2026-2027)
-Assignment: Assignment 1 - Part 1 (8 Filters + Main Menu)
-File Name: CS213_A1_Part1_S14_20250686_20250458_20250607.cpp
+Assignment: Assignment 1 - Part 2 (16 Filters + Main Menu)
+File Name: CS213_A1_Part1_S3_20250686_20250458_20250607.cpp
 
 Program Description:
 This C++ file implements a console-based image processing application using the
@@ -20,30 +20,41 @@ designated output directory.
 
 Team Details & Work Breakdown:
 
-Section: [s13,s14]
+Document: https://docs.google.com/document/d/19NgMFrC726xIMq96leXBSIuAjJHcJIjZKMcPA1uum4k/edit?tab=t.0
+Demo Video: https://youtu.be/ScNTBvacwhM 
+https://github.com/0xMoamen/Mozzarella
+
+Section: [S3,S4]
 Shared/Collaborative Tasks: 
 - Main Menu creation, integration of all filters, and File Handling (Load / Save / Exit).
 1. Name: [Moamen Osama Zakaria]
-   ID: [20250686]
-   Assigned Tasks / Filters:
+    ID: [20250686]
+    Assigned Tasks / Filters:
    - Filter [1]: [ Grayscale Conversion, e.g., Filter 1: Grayscale]
    - Filter [2]: [ Black and White, e.g., Filter 2: Black and White]
    - Filter [5]: [ Flip Image, e.g., Filter 5: Flip Image]
+   - Filter [9]: [ Merge Images, e.g., Filter 9: Merge Images]
+   - Filter [13]: [ Sunlight Filter, e.g., Filter 13: Sunlight Filter]
+   - Filter [14]: [ Old TV Filter, e.g., Filter 14: TV Filter]
 
 2. Name: [Fady Emad Hanna]
-   ID: [20250458]
-   Assigned Tasks / Filters:
-   - Filter [3]: [ Invert Image, e.g., Filter 3: Invert Image]
-   - Filter [7]: [Darken and Lighten, e.g., Filter 7: Brightness Filter]
+    ID: [20250458]
+    Assigned Tasks / Filters:
+    - Filter [3]: [ Invert Image, e.g., Filter 3: Invert Image]
+    - Filter [7]: [ Darken and Lighten, e.g., Filter 7: Brightness  Filter]  
+    - Filter [10]: [ Detect Image Edges, e.g., Filter 10: Edges Detection]
+    - Filter [11]: [ Crop Images, e.g., Filter 11: Crop Image]
+    - Filter [15]: [ Purple Filter, e.g., Filter 15: Purple]
 
 3. Name: [Mahmoud Hafez Abdelfatah]
-   ID: [20250607]
-   Assigned Tasks / Filters:
-   - Filter [4]: [Adding a Frame to the Picture, e.g., Filter 4: Frame Filter]
+    ID: [20250607]
+    Assigned Tasks / Filters:
+   - Filter [4]: [ Adding a Frame to the Picture, e.g., Filter 4: Frame Filter]
    - Filter [6]: [ Rotate Image, e.g., Filter 6: Rotate Image]
-   - Filter [8]: [Resizing Images, e.g., Filter 8: Resize Filter]
+   - Filter [8]: [ Resizing Images, e.g., Filter 8: Resize Filter]
+   - Filter [12]: [ Blur Images, e.g., Filter 12: Blur Filter]
+   - Filter [16]: [ Infrared looking, e.g., Filter 16: Infrared Filter]
 
-   For the fourth member we got the permission from the doctor to form a team of three.
 */
 #include <string>
 #include <iostream>
@@ -950,10 +961,10 @@ void infrared_filter (Image &image){
 //         std::cout << "Nothing to undo\n";
 //         return;
 //     }
-
 // }
 
 int main(){
+
     std::cout << R"(
     ========================================================================================
     || |\   /|     ___    |----   |----   /\     |---\    |-----  |       |       /---\   ||
@@ -963,7 +974,7 @@ int main(){
     || |     |    |___|   /----   /---- |    |   |   \    |-----  |-----  |-----  |   |   ||
     ========================================================================================
     )"<<"\n";
-
+    
     get_create_filepath("Saved/");
     get_create_filepath("Preview/");
     bool running = true;
