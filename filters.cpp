@@ -20,9 +20,9 @@ designated output directory.
 
 Team Details & Work Breakdown:
 
-Document: https://docs.google.com/document/d/19NgMFrC726xIMq96leXBSIuAjJHcJIjZKMcPA1uum4k/edit?tab=t.0
+Document: https://drive.google.com/file/d/1zJUikcQ2g2O8hwMYNokaND-b8aV-b2qa/view?usp=sharing
 Demo Video: https://youtu.be/ScNTBvacwhM 
-https://github.com/0xMoamen/Mozzarella
+Repo: https://github.com/0xMoamen/Mozzarella
 
 Section: [S3,S4]
 Shared/Collaborative Tasks: 
